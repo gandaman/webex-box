@@ -3,19 +3,19 @@
 USER=vagrant
 HOMEDIR=/home/$USER
 LXDE_CONF=/etc/lxdm/default.conf
-PROJECTDIR=/vagrant
+PROJECTDIR=/home/$USER/webex-box
+ALPINEVERSION=3.4
+# Something funky with the default d/l URL - this mirror seems to work
+ALPINEREPO=http://dl-5.alpinelinux.org/alpine/v$ALPINEVERSION/main
 
 source_dir="$PROJECTDIR/files"
 
 [ -d "$source_dir" ]
 
-# Something funky with the default d/l URL - this mirror seems to work
-ALPINEREPO=http://dl-5.alpinelinux.org/alpine/v3.2/main
-
-apk -X $ALPINEREPO --update add openjdk7-jre
+apk -X $ALPINEREPO --update add twm
+apk -X $ALPINEREPO add openjdk7-jre
 apk -X $ALPINEREPO add firefox
-apk -X $ALPINEREPO add twm
-apk -X $ALPINEREPO add libxmu6 || true
+#apk -X $ALPINEREPO add libxmu6 || true
 apk -X $ALPINEREPO add icedtea-7-plugin
 apk -X $ALPINEREPO add rsync
 
@@ -47,6 +47,5 @@ chown -R $USER:$USER $HOMEDIR
 #sudo update-alternatives --set mozilla-javaplugin.so /usr/lib/jvm/java-7-openjdk-i386/jre/lib/i386/IcedTeaPlugin.so
 
 # Skip login screen altogether, and get rid of unused user
-echo -e "[base]\nautologin=$USER" >> /etc/lxdm/default.conf
-deluser ubuntu
+#echo -e "[base]\nautologin=$USER" >> /etc/lxdm/default.conf
 

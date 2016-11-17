@@ -50,11 +50,11 @@ config.vm.synced_folder ".", "/vagrant", disabled: true
        echo "***************************************************************"
 
        apk add --update git
-       cd
+       cd /home/vagrant
        git clone --branch alpinelinux https://github.com/gandaman/webex-box
        cd webex-box
 
-#      [ -f ./script.sh ] && sh -x ./script.sh
+      [ -f ./script.sh ] && sh -x ./script.sh
       '
       config.vm.provision :shell, inline:
       ' sudo chown -R vagrant:vagrant /home/vagrant
