@@ -7,11 +7,16 @@ LXDE_CONF=/etc/lxdm/default.conf
 source_dir="/vagrant/files"
 
 [ -d "$source_dir" ]
-apk --update add openjdk7-jre
-apk --update add firefox
-apk --update add libxmu6 || true
-apk --update add icedtea-7-plugin
-apk --update add lxde
+
+# Something funky with the default d/l URL - this mirror seems to work
+ALPINEREPO=http://dl-5.alpinelinux.org/alpine/v3.2/main
+
+apk -X $ALPINEREPO --update add openjdk7-jre
+apk -X $ALPINEREPO add firefox
+apk -X $ALPINEREPO add twm
+apk -X $ALPINEREPO add libxmu6 || true
+apk -X $ALPINEREPO add icedtea-7-plugin
+apk -X $ALPINEREPO add rsync
 
 #sudo apt-get install -y firefox
 #sudo apt-get install -y openjdk-7-jre

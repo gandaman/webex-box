@@ -41,19 +41,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
    end
 
-   config.vm.synced_folder ".", "/vagrant", type: "nfs"
+#   config.vm.synced_folder ".", "/vagrant", type: "nfs"
+config.vm.synced_folder ".", "/vagrant", disabled: true
 
    config.vm.provision :shell, inline:
       'echo "***************************************************************"
        echo "Starting provisioning. "
        echo "***************************************************************"
 
-       apk add git
-       git clone http://github.com/gunnarx/webex
+       apk add --update git
+       cd
+       git clone --branch alpinelinux https://github.com/gandaman/webex-box
+       cd webex-box
 
-      [ -f /vagrant/script.sh ] && /vagrant/script.sh
+#      [ -f ./script.sh ] && sh -x ./script.sh
       '
-
       config.vm.provision :shell, inline:
       ' sudo chown -R vagrant:vagrant /home/vagrant
       echo #{vmname} >/vagrant/VMNAME
