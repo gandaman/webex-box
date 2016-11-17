@@ -19,14 +19,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    hostname = 'webex-linux-box' if hostname == nil
 
    box = ENV['BOX']
-   box = "trusty32" if box == nil
+   #box = "trusty32" if box == nil
+   box = "maier/alpine-3.4-x86_64" if box == nil
 
-   box_url = ENV['BOX_URL']
-   box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box" if box_url == nil
+#   box_url = ENV['BOX_URL']
+#   box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box" if box_url == nil
 
    config.vm.box = box
    config.vm.hostname = hostname
-   config.vm.box_url = box_url
+#   config.vm.box_url = box_url
 
    # Set a unique tag
    vmname = config.vm.hostname + "-" + Time.now.strftime("%Y%m%d%H%M")
@@ -37,23 +38,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize [ "modifyvm", :id, "--vram", "128" ]
       vb.customize [ "modifyvm", :id, "--clipboard" , "bidirectional" ]
       vb.customize [ "modifyvm", :id, "--cpus", 2 ]
+
    end
+
+   config.vm.synced_folder ".", "/vagrant", type: "nfs"
 
    config.vm.provision :shell, inline:
       'echo "***************************************************************"
        echo "Starting provisioning. "
-       echo "***************************************************************"'
+       echo "***************************************************************"
 
-      # Run final installation script, if it exists
+       apk add git
+       git clone http://github.com/gunnarx/webex
+
+      [ -f /vagrant/script.sh ] && /vagrant/script.sh
+      '
+
       config.vm.provision :shell, inline:
-      " [ -f /vagrant/script.sh ] && /vagrant/script.sh 
-        echo #{vmname} >/vagrant/VMNAME
-      "
-      # Created/copied files, are owned by root after provisioning - fix that
-      config.vm.provision :shell, inline:
-      " sudo chown -R vagrant:vagrant /home/vagrant
-      # Remove other users than vagrant -- makes things less confusing
-      sudo deluser ubuntu   # Might fail but that is ok
-      true                  # Make sure Vagrant does not stop on error
-      "
+      ' sudo chown -R vagrant:vagrant /home/vagrant
+      echo #{vmname} >/vagrant/VMNAME
+      '
 end
