@@ -6,18 +6,23 @@ LXDE_CONF=/etc/lxdm/default.conf
 PROJECTDIR=/home/$USER/webex-box
 ALPINEVERSION=3.4
 # Something funky with the default d/l URL - this mirror seems to work
-ALPINEREPO=http://dl-5.alpinelinux.org/alpine/v$ALPINEVERSION/main
+ALPINEREPOS="http://dl-5.alpinelinux.org/alpine/v$ALPINEVERSION"
 
 source_dir="$PROJECTDIR/files"
+#[ -d "$source_dir" ]
 
-[ -d "$source_dir" ]
+for r in $ALPINEREPOS ; do 
+   echo $r/main >>/etc/apk/repositories
+   echo $r/community >>/etc/apk/repositories
+   echo $r/testing >>/etc/apk/repositories
+done
 
-apk -X $ALPINEREPO --update add twm
-apk -X $ALPINEREPO add openjdk7-jre
-apk -X $ALPINEREPO add firefox
-#apk -X $ALPINEREPO add libxmu6 || true
-apk -X $ALPINEREPO add icedtea-7-plugin
-apk -X $ALPINEREPO add rsync
+apk --update add twm
+apk add openjdk7-jre
+apk add firefox
+#apk add libxmu6 || true
+apk add icedtea-7-plugin
+apk add rsync
 
 #sudo apt-get install -y firefox
 #sudo apt-get install -y openjdk-7-jre
