@@ -4,9 +4,10 @@ USER=vagrant
 HOMEDIR=/home/$USER
 LXDE_CONF=/etc/lxdm/default.conf
 PROJECTDIR=/home/$USER/webex-box
-ALPINEVERSION=3.4
+ALPINEVERSION=3.6
 # Something funky with the default d/l URL - this mirror seems to work
-ALPINEREPOS="http://dl-5.alpinelinux.org/alpine/v$ALPINEVERSION"
+ALPINEREPOS="http://dl-cdn.alpinelinux.org/alpine/v$ALPINEVERSION"
+EDGE="http://dl-cdn.alpinelinux.org/alpine/edge"
 
 source_dir="$PROJECTDIR/files"
 #[ -d "$source_dir" ]
@@ -14,8 +15,9 @@ source_dir="$PROJECTDIR/files"
 for r in $ALPINEREPOS ; do 
    echo $r/main >>/etc/apk/repositories
    echo $r/community >>/etc/apk/repositories
-   echo $r/testing >>/etc/apk/repositories
 done
+
+echo $EDGE/testing >>/etc/apk/repositories
 
 apk --update add twm
 apk add openjdk7-jre
@@ -30,6 +32,26 @@ apk add rsync
 #sudo apt-get install -y icedtea-7-plugin 
 
 #sudo apt-get install -y lxde --fix-broken
+
+[ -d "$source_dir" ]
+
+sudo apt-get update
+sudo apt-get install -y lxde --fix-broken --fix-missing
+
+sudo apt-get install -y google-chrome        \
+                        openjdk-7-jre        \
+                        libxmu6              \
+                        icedtea-7-plugin     \
+                        libpangox-1.0-dev    \
+                        libxmu-dev           \
+                        libegl1-mesa-dev     \
+                        libgtk2.0-dev        \
+                        libpng-dev           \
+                        libasound2-dev       \
+                        linux-sound-base     \
+                        libart-2.0-dev       \
+                        libxtst-dev
+
 # These dependencies always fail installation and the error sticks around - I don't think we need them
 #sudo apt-get remove -y dictionaries-common miscfiles
 

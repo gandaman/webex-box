@@ -19,20 +19,28 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    hostname = 'webex-linux-box' if hostname == nil
 
    box = ENV['BOX']
-   #box = "trusty32" if box == nil
-   box = "maier/alpine-3.4-x86_64" if box == nil
+   box = "maier/alpine-3.6-x86_64" if box == nil
 
 #   box_url = ENV['BOX_URL']
 #   box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box" if box_url == nil
 
    config.vm.box = box
-   config.vm.hostname = hostname
+#   NOT supported on Alpine config.vm.hostname = hostname
 #   config.vm.box_url = box_url
 
    # Set a unique tag
-   vmname = config.vm.hostname + "-" + Time.now.strftime("%Y%m%d%H%M")
+   vmname = hostname + "-" + Time.now.strftime("%Y%m%d%H%M")
    config.vm.provider :virtualbox do |vb|
       vb.gui = false
+
+      # maier/alpine recommended settings
+      vb.customize [
+         'modifyvm', :id,
+         '--natdnshostresolver1', 'on',
+         '--nic1', 'nat',
+         '--cableconnected1', 'on'
+      ]
+
       vb.customize [ "modifyvm", :id, "--name", vmname ]
       vb.customize [ "modifyvm", :id, "--memory", "2048" ]
       vb.customize [ "modifyvm", :id, "--vram", "128" ]
@@ -41,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
    end
 
-#   config.vm.synced_folder ".", "/vagrant", type: "nfs"
+   #   config.vm.synced_folder ".", "/vagrant", type: "nfs"
 config.vm.synced_folder ".", "/vagrant", disabled: true
 
    config.vm.provision :shell, inline:
